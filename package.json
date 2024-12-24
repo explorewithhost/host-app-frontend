@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "homepage": ".",
+  "engines": {
+    "node": "22.x" // Add this to specify the Node.js version
+  },
   "scripts": {
     "start": "webpack serve --open",
     "build": "webpack --mode production",
