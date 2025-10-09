@@ -1,23 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 const Dashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    localStorage.removeItem("token"); // Clear the JWT token
-    navigate("/login"); // Redirect to login
-  };
 
   useEffect(() => {
-    // Fetch dashboard data based on user role
     const fetchDashboardData = async () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get("http://localhost:5000/api/users/dashboard", {
-          headers: { Authorization: `Bearer ${token}` }, // Attach token for authorization
+          headers: { Authorization: `Bearer ${token}` },
         });
         setDashboardData(response.data);
       } catch (error) {
@@ -31,127 +24,90 @@ const Dashboard = () => {
   if (!dashboardData) return <p>Loading...</p>;
 
   return (
-    <div style={{ fontFamily: "Arial, sans-serif", padding: "20px" }}>
-      <h2>Dashboard</h2>
-      <p>{dashboardData.message}</p>
+    <div
+      style={{
+        fontFamily: "Arial, sans-serif",
+        padding: "20px",
+        backgroundColor: "#f8f9fa",
+        minHeight: "100vh",
+      }}
+    >
+      <h1 style={{ textAlign: "center", color: "#007BFF", marginBottom: "20px" }}>Dashboard</h1>
+      <p style={{ textAlign: "center", fontSize: "1.2rem" }}>{dashboardData.message}</p>
 
-      {/* Host-Specific Features */}
-      {dashboardData.role === "host" && (
-        <div>
-          <h3>Host Features</h3>
-          <p><strong>Bio:</strong> {dashboardData.hostFeatures.bio || "No bio provided."}</p>
-          <h4>Offerings</h4>
-          <ul>
-            {dashboardData.hostFeatures.offerings?.length > 0 ? (
-              dashboardData.hostFeatures.offerings.map((offering, idx) => (
-                <li key={idx}>{offering}</li>
-              ))
-            ) : (
-              <p>No offerings available.</p>
-            )}
-          </ul>
-          <h4>Ratings</h4>
-          <p>{dashboardData.hostFeatures.ratings || "No ratings yet."}</p>
-          
-          {/* NEW: "View Public Profile" button added */}
-          <Link
-            to={`/hosts/${dashboardData.id}`} // Navigate to HostProfilePage
-            style={{
-              display: "inline-block",
-              padding: "10px 20px",
-              margin: "10px 0",
-              backgroundColor: "#FFC107",
-              color: "#000",
-              textDecoration: "none",
-              borderRadius: "5px",
-            }}
-          >
-            View Public Profile
-          </Link>
-
-          {/* NEW: Buttons for host-specific actions */}
-          <button
-            style={{
-              padding: "10px 20px",
-              margin: "10px 0",
-              backgroundColor: "#007BFF",
-              color: "#fff",
-              border: "none",
-              borderRadius: "5px",
-            }}
-          >
-            Manage Offerings
-          </button>
-          <button
-            style={{
-              padding: "10px 20px",
-              margin: "10px 0",
-              backgroundColor: "#28A745",
-              color: "#fff",
-              border: "none",
-              borderRadius: "5px",
-            }}
-          >
-            View Bookings
-          </button>
-        </div>
-      )}
-
-      {/* Traveler-Specific Features */}
-      {dashboardData.role === "traveler" && (
-        <div>
-          <h3>Traveler Features</h3>
-          <h4>Upcoming Trips</h4>
-          <ul>
-            {dashboardData.travelerFeatures.trips?.length > 0 ? (
-              dashboardData.travelerFeatures.trips.map((trip, idx) => (
-                <li key={idx}>{trip}</li>
-              ))
-            ) : (
-              <p>No trips booked yet.</p>
-            )}
-          </ul>
-          <h4>Wishlist</h4>
-          <ul>
-            {dashboardData.travelerFeatures.wishlist?.length > 0 ? (
-              dashboardData.travelerFeatures.wishlist.map((item, idx) => (
-                <li key={idx}>{item}</li>
-              ))
-            ) : (
-              <p>No items in your wishlist.</p>
-            )}
-          </ul>
-          
-          {/* NEW: Button for travelers to explore hosts */}
-          <button
-            style={{
-              padding: "10px 20px",
-              margin: "10px 0",
-              backgroundColor: "#007BFF",
-              color: "#fff",
-              border: "none",
-              borderRadius: "5px",
-            }}
-          >
-            Explore More Hosts
-          </button>
-        </div>
-      )}
-
-      {/* Shared Logout Button */}
-      <button
-        onClick={handleLogout}
+      <div
         style={{
-          padding: "10px 20px",
-          backgroundColor: "#FF5733",
-          color: "#FFF",
-          border: "none",
-          cursor: "pointer",
-          marginTop: "20px",
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+          gap: "20px",
+          marginTop: "30px",
         }}
       >
-        Logout
-      </button>
+        {dashboardData.role === "host" && (
+          <div
+            style={{
+              padding: "20px",
+              backgroundColor: "#fff",
+              borderRadius: "10px",
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+            }}
+          >
+            <h2 style={{ color: "#007BFF" }}>Host Features</h2>
+            <p><strong>Bio:</strong> {dashboardData.hostFeatures.bio || "No bio provided"}</p>
+            <p><strong>Offerings:</strong> {dashboardData.hostFeatures.offerings.length > 0 ? "Available" : "No offerings available"}</p>
+            <p><strong>Ratings:</strong> {dashboardData.hostFeatures.ratings || "No ratings yet"}</p>
+            <Link to="/host/profile-builder">
+              <button
+                style={{
+                  padding: "10px 20px",
+                  backgroundColor: "#007BFF",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                  marginTop: "10px",
+                }}
+              >
+                Build/Edit Profile
+              </button>
+            </Link>
+          </div>
+        )}
+
+        {dashboardData.role === "traveler" && (
+          <div
+            style={{
+              padding: "20px",
+              backgroundColor: "#fff",
+              borderRadius: "10px",
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+            }}
+          >
+            <h2 style={{ color: "#28A745" }}>Traveler Features</h2>
+            <p><strong>Trips:</strong> {dashboardData.travelerFeatures.trips.length > 0 ? "Available" : "No trips yet"}</p>
+            <p><strong>Wishlist:</strong> {dashboardData.travelerFeatures.wishlist.length > 0 ? "Available" : "No wishlist yet"}</p>
+          </div>
+        )}
+      </div>
+
+      <div style={{ textAlign: "center", marginTop: "30px" }}>
+        <button
+          onClick={() => {
+            localStorage.removeItem("token");
+            window.location.href = "/login";
+          }}
+          style={{
+            padding: "10px 20px",
+            backgroundColor: "#DC3545",
+            color: "#fff",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+          }}
+        >
+          Logout
+        </button>
+      </div>
     </div>
   );
 };
