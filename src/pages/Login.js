@@ -1,75 +1,76 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { API_BASE } from "../api"; // <- uses process.env.API_BASE in prod
 
-const Login = () => {
+export default function Login() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState("");
 
-  const handleLogin = async (e) => {
+  async function handleLogin(e) {
     e.preventDefault();
-    console.log("Login form submitted with email:", email);
-
+    setErr("");
+    setLoading(true);
     try {
-      const response = await axios.post("http://localhost:5000/api/users/login", {
+      const res = await axios.post(`${API_BASE}/api/users/login`, {
         email,
         password,
       });
-      console.log("Login successful! Response:", response.data);
-
-      // Save token to localStorage
-      localStorage.setItem("token", response.data.token);
-      setErrorMessage(""); // Clear previous errors
-      navigate("/dashboard"); // Redirect to dashboard
+      // persist token + basic user info
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+      navigate("/dashboard");
     } catch (error) {
-      const errorMsg = error.response?.data?.error || "Login failed. Please try again.";
-      setErrorMessage(errorMsg);
-      console.error("Login failed. Error message:", errorMsg);
+      const msg =
+        error?.response?.data?.error ||
+        error?.message ||
+        "Login failed. Please try again.";
+      setErr(msg);
+    } finally {
+      setLoading(false);
     }
-  };
+  }
 
   return (
-    <div style={{ maxWidth: "400px", margin: "0 auto", padding: "20px" }}>
+    <div className="auth-page">
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
-        <div>
-          <label>Email:</label>
+        <label>
+          Email
           <input
             type="email"
             value={email}
+            autoComplete="email"
             onChange={(e) => setEmail(e.target.value)}
             required
-            style={{ width: "100%", padding: "8px", margin: "10px 0" }}
           />
-        </div>
-        <div>
-          <label>Password:</label>
+        </label>
+
+        <label>
+          Password
           <input
             type="password"
             value={password}
+            autoComplete="current-password"
             onChange={(e) => setPassword(e.target.value)}
             required
-            style={{ width: "100%", padding: "8px", margin: "10px 0" }}
+            minLength={8}
           />
-        </div>
-        {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
-        <button
-          type="submit"
-          style={{
-            padding: "10px 20px",
-            backgroundColor: "#007BFF",
-            color: "#FFF",
-            border: "none",
-            cursor: "pointer",
-          }}
-        >
-          Login
+        </label>
+
+        <button type="submit" disabled={loading}>
+          {loading ? "Signing in..." : "Login"}
         </button>
+
+        {err && <p className="error">{err}</p>}
       </form>
+
+      <p style={{ marginTop: 8 }}>
+        Don’t have an account? <Link to="/register">Register</Link>
+      </p>
     </div>
   );
-};
-
-export default Login;
+}

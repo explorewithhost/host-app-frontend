@@ -1,101 +1,111 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { API_BASE } from "../api"; // <- uses process.env.API_BASE in prod
 
-const Register = () => {
-  const [formData, setFormData] = useState({
+export default function Register() {
+  const navigate = useNavigate();
+  const [form, setForm] = useState({
     name: "",
     email: "",
     password: "",
-    role: "traveler", // Default to 'traveler'
+    role: "traveler", // or "host"
   });
-  const [errorMessage, setErrorMessage] = useState("");
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState("");
+  const [ok, setOk] = useState("");
 
-  const handleChange = (e) => {
+  function onChange(e) {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+    setForm((f) => ({ ...f, [name]: value }));
+  }
 
-  const handleRegister = async (e) => {
+  async function handleRegister(e) {
     e.preventDefault();
+    setErr("");
+    setOk("");
+    setLoading(true);
     try {
-      const response = await axios.post("http://localhost:5000/api/users/register", formData);
-      console.log("Registration successful:", response.data);
-      setErrorMessage(""); // Clear any previous errors
-      navigate("/login"); // Redirect to login
+      const res = await axios.post(`${API_BASE}/api/users/register`, {
+        name: form.name.trim(),
+        email: form.email.trim(),
+        password: form.password,
+        role: form.role, // "host" | "traveler"
+      });
+
+      // optional toast message
+      setOk(res.data?.message || "Registered!");
+      // send to login so they can auth
+      setTimeout(() => navigate("/login"), 600);
     } catch (error) {
-      const errorMsg = error.response?.data?.error || "Registration failed. Please try again.";
-      setErrorMessage(errorMsg);
-      console.error("Registration error:", errorMsg);
+      const msg =
+        error?.response?.data?.error ||
+        error?.message ||
+        "Registration failed. Please try again.";
+      setErr(msg);
+    } finally {
+      setLoading(false);
     }
-  };
+  }
 
   return (
-    <div style={{ maxWidth: "400px", margin: "0 auto", padding: "20px" }}>
-      <h2>Register</h2>
+    <div className="auth-page">
+      <h2>Create an account</h2>
       <form onSubmit={handleRegister}>
-        <div>
-          <label>Name:</label>
+        <label>
+          Name
           <input
-            type="text"
             name="name"
-            value={formData.name}
-            onChange={handleChange}
+            value={form.name}
+            onChange={onChange}
             required
-            style={{ width: "100%", padding: "8px", margin: "10px 0" }}
           />
-        </div>
-        <div>
-          <label>Email:</label>
+        </label>
+
+        <label>
+          Email
           <input
             type="email"
             name="email"
-            value={formData.email}
-            onChange={handleChange}
+            value={form.email}
+            autoComplete="email"
+            onChange={onChange}
             required
-            style={{ width: "100%", padding: "8px", margin: "10px 0" }}
           />
-        </div>
-        <div>
-          <label>Password:</label>
+        </label>
+
+        <label>
+          Password
           <input
             type="password"
             name="password"
-            value={formData.password}
-            onChange={handleChange}
+            value={form.password}
+            autoComplete="new-password"
+            onChange={onChange}
             required
-            style={{ width: "100%", padding: "8px", margin: "10px 0" }}
+            minLength={8}
           />
-        </div>
-        <div>
-          <label>Role:</label>
-          <select
-            name="role"
-            value={formData.role}
-            onChange={handleChange}
-            style={{ width: "100%", padding: "8px", margin: "10px 0" }}
-          >
+        </label>
+
+        <label>
+          Role
+          <select name="role" value={form.role} onChange={onChange}>
             <option value="traveler">Traveler</option>
             <option value="host">Host</option>
           </select>
-        </div>
-        {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
-        <button
-          type="submit"
-          style={{
-            padding: "10px 20px",
-            backgroundColor: "#007BFF",
-            color: "#FFF",
-            border: "none",
-            cursor: "pointer",
-          }}
-        >
-          Register
+        </label>
+
+        <button type="submit" disabled={loading}>
+          {loading ? "Creating..." : "Register"}
         </button>
+
+        {err && <p className="error">{err}</p>}
+        {ok && <p className="success">{ok}</p>}
       </form>
+
+      <p style={{ marginTop: 8 }}>
+        Already have an account? <Link to="/login">Login</Link>
+      </p>
     </div>
   );
-};
-
-export default Register;
+}
