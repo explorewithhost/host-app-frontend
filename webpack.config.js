@@ -1,21 +1,21 @@
+// webpack.config.js
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+const webpack = require("webpack");
 
 module.exports = {
   entry: "./src/index.js",
   output: {
     path: path.resolve(__dirname, "build"),
     filename: "main.js",
+    clean: true,
   },
   module: {
     rules: [
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        use: {
-          loader: "babel-loader",
-        },
+        use: { loader: "babel-loader" },
       },
       {
         test: /\.css$/i,
@@ -24,13 +24,15 @@ module.exports = {
     ],
   },
   plugins: [
-    new HtmlWebpackPlugin({
-      template: "./src/index.html",
+    new HtmlWebpackPlugin({ template: "./src/index.html" }),
+    new webpack.DefinePlugin({
+      "process.env.API_BASE": JSON.stringify(process.env.API_BASE || "")
     }),
   ],
   devServer: {
     static: "./dist",
-    historyApiFallback: true, // enables React Router support
+    historyApiFallback: true,
+    // port: 3000, // uncomment if you want 3000 locally
   },
   mode: "development",
 };
