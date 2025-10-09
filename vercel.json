@@ -1,15 +1,7 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "build",
-        "buildCommand": "node node_modules/webpack/bin/webpack.js --mode production"
-      }
-    }
-  ],
+  "buildCommand": "node node_modules/webpack/bin/webpack.js --mode production",
+  "outputDirectory": "build",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]
