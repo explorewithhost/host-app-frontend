@@ -1,68 +1,169 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
+import { API_BASE } from "../api";
+import "./HostProfilePage.css";
 
-const HostProfilePage = () => {
-  const { id } = useParams(); // Get host ID from URL
+const TABS = ["Lodging", "Experiences", "Transport"];
+
+export default function HostProfilePage() {
+  const { id } = useParams();
   const [host, setHost] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState("");
+  const [tab, setTab] = useState(TABS[0]);
 
   useEffect(() => {
-    const fetchHost = async () => {
+    let mounted = true;
+    async function load() {
+      setLoading(true);
+      setErr("");
       try {
-        const response = await axios.get(`http://localhost:5000/api/hosts/${id}`);
-        setHost(response.data);
-      } catch (error) {
-        console.error("Error fetching host details:", error);
+        const res = await axios.get(`${API_BASE}/api/hosts/${id}`);
+        if (mounted) setHost(res.data);
+      } catch (e) {
+        if (mounted) setErr(e?.response?.data?.error || "Failed to load host");
+      } finally {
+        if (mounted) setLoading(false);
       }
-    };
-
-    fetchHost();
+    }
+    load();
+    return () => (mounted = false);
   }, [id]);
 
-  if (!host) return <p>Loading...</p>;
+  const { lodging = [], experiences = [], transport = [] } =
+    useMemo(() => host?.offerings || {}, [host]);
+
+  const items = useMemo(() => {
+    if (tab === "Lodging") return lodging;
+    if (tab === "Experiences") return experiences;
+    return transport;
+  }, [tab, lodging, experiences, transport]);
 
   return (
-    <div style={{ fontFamily: "Arial, sans-serif", padding: "20px" }}>
-      <header style={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }}>
-        <h1>Host Profile</h1>
-        <Link to="/" style={{ textDecoration: "none", color: "#007BFF" }}>
-          Back to Search
-        </Link>
+    <div className="hostpage">
+      {/* Top bar */}
+      <header className="hp-nav">
+        <Link to="/" className="hp-logo">Host</Link>
+        <nav>
+          <Link to="/search">Search</Link>
+          <Link to="/host/profile-builder">Become a Host</Link>
+          <Link to="/about">About</Link>
+        </nav>
+        <div className="hp-auth">
+          <Link to="/login">Log In</Link>
+          <Link to="/register" className="primary">Sign Up</Link>
+        </div>
       </header>
 
-      <div style={{ display: "flex", gap: "20px" }}>
-        {/* Host Details */}
-        <div style={{ flex: 2, padding: "20px", border: "1px solid #ddd", borderRadius: "10px" }}>
-          <h2>{host.name}</h2>
-          <p><strong>Bio:</strong> {host.bio}</p>
-          <h3>Hosting Preferences</h3>
-          <p>{host.hostingPreferences || "Not specified"}</p>
-          <h3>Location</h3>
-          <p>{host.location.generalAddress}</p>
-          {host.airportPickup && <p style={{ color: "green" }}>Airport Pickup Available</p>}
-          <h3>Lifestyle</h3>
-          <p><strong>Hobbies:</strong> {host.lifestyle.hobbies.join(", ") || "Not specified"}</p>
-          <p><strong>Dietary Preferences:</strong> {host.lifestyle.dietaryPreferences}</p>
-          <p><strong>Smoking Policy:</strong> {host.lifestyle.smokingPolicy}</p>
-          <p><strong>Drinking Policy:</strong> {host.lifestyle.drinkingPolicy}</p>
-          <p><strong>Values:</strong> {host.lifestyle.values.join(", ") || "Not specified"}</p>
-          <p><strong>Activities:</strong> {host.lifestyle.activities.join(", ") || "Not specified"}</p>
-          <h3>Ratings</h3>
-          <p>{host.ratings || "No ratings yet"}</p>
-        </div>
+      <main className="hp-container">
+        {/* Loading / error */}
+        {loading && (
+          <section className="hp-state">
+            <div className="spinner" aria-label="Loading" />
+            <p>Loading host…</p>
+          </section>
+        )}
 
-        {/* Interaction Options */}
-        <div style={{ flex: 1 }}>
-          <button style={{ padding: "10px 20px", margin: "10px 0", backgroundColor: "#007BFF", color: "#fff", border: "none", borderRadius: "5px" }}>
-            Add to Itinerary
-          </button>
-          <button style={{ padding: "10px 20px", margin: "10px 0", backgroundColor: "#28A745", color: "#fff", border: "none", borderRadius: "5px" }}>
-            Book Now
-          </button>
-        </div>
-      </div>
+        {!loading && err && (
+          <section className="hp-state">
+            <p className="error">{err}</p>
+            <Link to="/search" className="btn">Back to search</Link>
+          </section>
+        )}
+
+        {/* Content */}
+        {!loading && !err && host && (
+          <>
+            {/* Header card */}
+            <section className="hp-header">
+              <div className="hp-photos">
+                <img
+                  src={
+                    host?.photos?.[0] ||
+                    "https://images.unsplash.com/photo-1526772662000-3f88f10405ff?q=80&w=1200&auto=format&fit=crop"
+                  }
+                  alt={`${host?.name || "Host"} cover`}
+                />
+              </div>
+
+              <div className="hp-meta">
+                <div className="hp-avatar" aria-hidden>
+                  {(host?.name || "H").slice(0, 1).toUpperCase()}
+                </div>
+                <div className="hp-title">
+                  <h1>{host?.name || "Host"}</h1>
+                  <p className="muted">
+                    {host?.city ? `${host.city}, ` : ""}
+                    {host?.country || ""}
+                  </p>
+                  {typeof host?.rating === "number" && (
+                    <p className="rating">★ {host.rating.toFixed(1)}</p>
+                  )}
+                </div>
+                <div className="hp-actions">
+                  <a href="#inquire" className="btn">Message</a>
+                  <a href="#book" className="btn primary">Book</a>
+                </div>
+              </div>
+
+              {host?.bio && <p className="hp-bio">{host.bio}</p>}
+            </section>
+
+            {/* Tabs */}
+            <section className="hp-tabs">
+              {TABS.map((t) => (
+                <button
+                  key={t}
+                  className={`tab ${tab === t ? "active" : ""}`}
+                  onClick={() => setTab(t)}
+                >
+                  {t}
+                </button>
+              ))}
+            </section>
+
+            {/* Items grid */}
+            <section className="hp-grid">
+              {items.length === 0 ? (
+                <div className="hp-empty">
+                  <p>
+                    No {tab.toLowerCase()} listed yet. Check back soon or{" "}
+                    <Link to="/search">explore more hosts</Link>.
+                  </p>
+                </div>
+              ) : (
+                items.map((it, idx) => (
+                  <article key={idx} className="hp-card">
+                    <div className="hp-card-media">
+                      <img
+                        src={
+                          it?.photo ||
+                          "https://images.unsplash.com/photo-1496417263034-38ec4f0b665a?q=80&w=1200&auto=format&fit=crop"
+                        }
+                        alt={it?.title || "Offering"}
+                      />
+                    </div>
+                    <div className="hp-card-body">
+                      <h3>{it?.title || "Untitled"}</h3>
+                      {it?.price != null && (
+                        <p className="price">${Number(it.price).toLocaleString()}</p>
+                      )}
+                      {it?.description && (
+                        <p className="desc">{it.description}</p>
+                      )}
+                      <div className="hp-card-actions">
+                        <a href="#details" className="btn">Details</a>
+                        <a href="#book" className="btn primary">Book</a>
+                      </div>
+                    </div>
+                  </article>
+                ))
+              )}
+            </section>
+          </>
+        )}
+      </main>
     </div>
   );
-};
-
-export default HostProfilePage;
+}
