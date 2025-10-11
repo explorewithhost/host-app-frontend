@@ -1,265 +1,157 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useMemo, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
+import axios from "axios";
+import { API_BASE } from "../api";
+import "./SearchPage.css";
 
-const SearchPage = () => {
-  const [results, setResults] = useState([
-    // Mocked host data for "Popular Destinations" section
-    {
-      id: "64a7bcf19e1e4a5e6f6a7f91",
-      name: "Cozy Mountain Retreat",
-      location: "Bangkok, Thailand",
-      ratings: 4.8,
-      image: "https://via.placeholder.com/300", // Placeholder image
-    },
-    {
-      id: "64a7bcf19e1e4a5e6f6a7f92",
-      name: "Beachside Villa",
-      location: "Phuket, Thailand",
-      ratings: 4.5,
-      image: "https://via.placeholder.com/300", // Placeholder image
-    },
-  ]);
+export default function SearchPage() {
+  const [params, setParams] = useSearchParams();
+  const [mode, setMode] = useState(params.get("type") || "destinations"); // destinations | experiences
+  const [q, setQ] = useState(params.get("q") || "");
+  const [travelers, setTravelers] = useState(params.get("t") || "");
+  const [page, setPage] = useState(Number(params.get("page") || 1));
+  const [data, setData] = useState({ items: [], total: 0 });
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState("");
+
+  const limit = 20;
+
+  useEffect(() => {
+    async function load() {
+      setLoading(true);
+      setErr("");
+      try {
+        const res = await axios.get(`${API_BASE}/api/hosts`, {
+          params: { q, type: mode, page, limit },
+        });
+        setData(res.data || { items: [], total: 0 });
+      } catch (e) {
+        setErr(e?.response?.data?.error || "Failed to load results");
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
+  }, [q, mode, page]);
+
+  useEffect(() => {
+    const next = new URLSearchParams();
+    if (q) next.set("q", q);
+    if (mode) next.set("type", mode);
+    if (travelers) next.set("t", travelers);
+    if (page > 1) next.set("page", String(page));
+    setParams(next, { replace: true });
+  }, [q, mode, travelers, page, setParams]);
+
+  const totalPages = useMemo(
+    () => Math.max(1, Math.ceil((data.total || 0) / limit)),
+    [data.total]
+  );
 
   return (
-    <div style={{ fontFamily: "Arial, sans-serif" }}>
-      {/* Header with Login/Register */}
-      <header
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: "10px 20px",
-          backgroundColor: "#007BFF",
-          color: "#fff",
-        }}
-      >
-        <h1 style={{ margin: 0 }}>Host</h1>
-        <div>
-          <Link
-            to="/login"
-            style={{
-              marginRight: "10px",
-              color: "#fff",
-              textDecoration: "none",
-              padding: "5px 15px",
-              backgroundColor: "#0056b3",
-              borderRadius: "20px",
-            }}
-          >
-            Login
-          </Link>
-          <Link
-            to="/register"
-            style={{
-              color: "#fff",
-              textDecoration: "none",
-              padding: "5px 15px",
-              backgroundColor: "#28a745",
-              borderRadius: "20px",
-            }}
-          >
-            Register
-          </Link>
+    <div className="searchpage">
+      <header className="sp-nav">
+        <Link to="/" className="logo">Host</Link>
+        <div className="sp-auth">
+          <Link to="/login">Log In</Link>
+          <Link to="/register" className="primary">Sign Up</Link>
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section
-        style={{
-          position: "relative",
-          backgroundImage: "url('https://via.placeholder.com/1920x500')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          color: "#fff",
-          textAlign: "center",
-          padding: "50px 20px",
-        }}
-      >
-        <h1 style={{ fontSize: "3rem", marginBottom: "20px" }}>Welcome to Host</h1>
-        <p style={{ fontSize: "1.2rem", marginBottom: "30px" }}>
-          Discover authentic experiences with local hosts.
-        </p>
-        {/* Search Bar */}
-        <form
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: "10px",
-          }}
-        >
-          <input
-            type="text"
-            placeholder="Location"
-            style={{
-              padding: "10px",
-              borderRadius: "5px",
-              border: "1px solid #ddd",
-              width: "200px",
-            }}
-          />
-          <input
-            type="date"
-            style={{
-              padding: "10px",
-              borderRadius: "5px",
-              border: "1px solid #ddd",
-              width: "150px",
-            }}
-          />
-          <input
-            type="text"
-            placeholder="Host Name"
-            style={{
-              padding: "10px",
-              borderRadius: "5px",
-              border: "1px solid #ddd",
-              width: "200px",
-            }}
-          />
+      <section className="sp-filters">
+        <div className="sp-toggle">
           <button
-            type="submit"
-            style={{
-              padding: "10px 20px",
-              backgroundColor: "#007BFF",
-              color: "#fff",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}
+            className={`chip ${mode === "destinations" ? "active" : ""}`}
+            onClick={() => { setMode("destinations"); setPage(1); }}
           >
-            Search
+            Destinations
           </button>
-        </form>
+          <button
+            className={`chip ${mode === "experiences" ? "active" : ""}`}
+            onClick={() => { setMode("experiences"); setPage(1); }}
+          >
+            Experiences
+          </button>
+        </div>
+
+        <div className="sp-inputs">
+          <input
+            value={q}
+            onChange={(e) => { setQ(e.target.value); setPage(1); }}
+            placeholder={mode === "experiences" ? "Search experiences or places" : "Search destinations or city"}
+            aria-label="Search"
+          />
+          <input
+            type="number"
+            min="1"
+            value={travelers}
+            onChange={(e) => setTravelers(e.target.value)}
+            placeholder="Travelers"
+            aria-label="Number of travelers"
+          />
+          <button className="apply" onClick={() => setPage(1)}>Search</button>
+        </div>
       </section>
 
-      {/* Popular Destinations Section */}
-      <section style={{ padding: "50px 20px", backgroundColor: "#f8f9fa" }}>
-        <h2 style={{ textAlign: "center", marginBottom: "30px" }}>Popular Destinations</h2>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "20px",
-            flexWrap: "wrap",
-          }}
-        >
-          {results.map((host) => (
-            <div
-              key={host.id}
-              style={{
-                border: "1px solid #ddd",
-                borderRadius: "10px",
-                width: "250px",
-                textAlign: "center",
-                overflow: "hidden",
-                backgroundColor: "#fff",
-                boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-              }}
-            >
+      <main className="sp-grid">
+        {loading && (
+          <div className="sp-empty">
+            <div className="spinner" /> <p>Loading…</p>
+          </div>
+        )}
+        {!loading && err && (
+          <div className="sp-empty"><p className="error">{err}</p></div>
+        )}
+        {!loading && !err && data.items.length === 0 && (
+          <div className="sp-empty"><p>No results. Try a different place or switch tabs.</p></div>
+        )}
+        {!loading && !err && data.items.map((h) => (
+          <article key={h._id} className="sp-card">
+            <div className="media">
               <img
-                src={host.image}
-                alt={host.name}
-                style={{ width: "100%", height: "150px", objectFit: "cover" }}
+                src={h?.photos?.[0] || "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1200&auto=format&fit=crop"}
+                alt={h.name}
               />
-              <div style={{ padding: "10px" }}>
-                <h4>{host.name}</h4>
-                <p>{host.location}</p>
-                <p>Rating: {host.ratings}</p>
-                <Link
-                  to={`/hosts/${host.id}`}
-                  style={{
-                    display: "inline-block",
-                    marginTop: "10px",
-                    padding: "10px 15px",
-                    backgroundColor: "#007BFF",
-                    color: "#fff",
-                    textDecoration: "none",
-                    borderRadius: "5px",
-                  }}
-                >
-                  View Profile
-                </Link>
+              {typeof h?.rating === "number" && (
+                <span className="badge">{Math.round(h.rating * 20)}% Match</span>
+              )}
+            </div>
+            <div className="body">
+              <h3>{h.name}</h3>
+              <p className="muted">{[h.city, h.country].filter(Boolean).join(", ")}</p>
+              <div className="meta">
+                <span>
+                  {(() => {
+                    const prices = [
+                      ...(h.offerings?.lodging || []),
+                      ...(h.offerings?.experiences || []),
+                      ...(h.offerings?.transport || []),
+                    ]
+                      .map((x) => x.price)
+                      .filter((x) => x != null);
+                    if (prices.length) {
+                      const p = Math.min(...prices);
+                      return `From $${p}/day`;
+                    }
+                    return "See details";
+                  })()}
+                </span>
+              </div>
+              <div className="actions">
+                <Link to={`/hosts/${h._id}`} className="btn">View Journey</Link>
               </div>
             </div>
-          ))}
-        </div>
-      </section>
+          </article>
+        ))}
+      </main>
 
-      {/* Additional Services Section */}
-      <section style={{ padding: "50px 20px" }}>
-        <h2 style={{ textAlign: "center", marginBottom: "30px" }}>Services Our Hosts Offer</h2>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "20px",
-            flexWrap: "wrap",
-          }}
-        >
-          {/* Service Card */}
-          <div
-            style={{
-              border: "1px solid #ddd",
-              borderRadius: "10px",
-              width: "200px",
-              textAlign: "center",
-              padding: "20px",
-              backgroundColor: "#fff",
-              boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-            }}
-          >
-            <img
-              src="https://via.placeholder.com/100"
-              alt="Airport Pickup"
-              style={{ marginBottom: "10px" }}
-            />
-            <h4>Airport Pickup</h4>
-            <p>Convenient pickup services from your arrival point.</p>
-          </div>
-          <div
-            style={{
-              border: "1px solid #ddd",
-              borderRadius: "10px",
-              width: "200px",
-              textAlign: "center",
-              padding: "20px",
-              backgroundColor: "#fff",
-              boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-            }}
-          >
-            <img
-              src="https://via.placeholder.com/100"
-              alt="Guided Tours"
-              style={{ marginBottom: "10px" }}
-            />
-            <h4>Guided Tours</h4>
-            <p>Explore the best spots with local expertise.</p>
-          </div>
-          <div
-            style={{
-              border: "1px solid #ddd",
-              borderRadius: "10px",
-              width: "200px",
-              textAlign: "center",
-              padding: "20px",
-              backgroundColor: "#fff",
-              boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-            }}
-          >
-            <img
-              src="https://via.placeholder.com/100"
-              alt="Cooking Classes"
-              style={{ marginBottom: "10px" }}
-            />
-            <h4>Cooking Classes</h4>
-            <p>Learn to prepare authentic local dishes.</p>
-          </div>
+      {!loading && !err && data.total > limit && (
+        <div className="sp-pager">
+          <button disabled={page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>Prev</button>
+          <span>Page {page} / {totalPages}</span>
+          <button disabled={page >= totalPages} onClick={() => setPage((p) => Math.min(totalPages, p + 1))}>Next</button>
         </div>
-      </section>
+      )}
     </div>
   );
-};
-
-export default SearchPage;
- 
+}

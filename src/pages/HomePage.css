@@ -122,20 +122,49 @@
 .steps h3 { margin: .3rem 0 .4rem; font-size: 1.15rem; }
 .steps p { color: #4b5563; /* slate-600 */ }
 
-/* Responsive: stack search bar on small screens */
-@media (max-width: 640px) {
+/* ---------- Responsive (phones) ---------- */
+@media (max-width: 768px) {
+  /* Safe area + tighter paddings */
+  .navbar {
+    padding: calc(.7rem + env(safe-area-inset-top, 0)) 1rem .7rem 1rem;
+    gap: .5rem;
+  }
+
+  /* Keep links visible without overflow */
+  .navbar nav {
+    display: flex;
+    gap: .8rem;
+    max-width: 55vw;
+    overflow-x: auto;              /* allow side scroll instead of wrapping onto hero */
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+    scrollbar-width: none;         /* Firefox */
+  }
+  .navbar nav::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+
+  .navbar .logo { font-size: 1.4rem; }
+  .auth-buttons .login,
+  .auth-buttons .signup { padding: .45rem .7rem; font-size: .9rem; }
+
+  /* Headline spacing */
+  .hero h1 { margin: 0 0 .6rem; }
+  .hero p { margin-bottom: 1.1rem; }
+
+  /* Fit the search UI to the screen */
   .search-bar {
-    flex-direction: column;
+    width: min(92vw, 700px);
+    flex-direction: column;        /* stack neatly on mobile */
     align-items: stretch;
     border-radius: 16px;
+    gap: .6rem;
   }
   .search-bar input,
   .search-btn {
     width: 100%;
-    border-radius: 10px;
+    border-radius: 12px;
   }
-  .navbar {
-    padding: .9rem 1rem;
-  }
-  .navbar nav a { margin: 0 .6rem; }
+
+  /* How-it-works spacing */
+  .how-it-works { padding: 3rem 1rem; }
 }
+
