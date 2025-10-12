@@ -6,10 +6,14 @@ import "./SearchPage.css";
 
 export default function SearchPage() {
   const [params, setParams] = useSearchParams();
+
   const [mode, setMode] = useState(params.get("type") || "destinations"); // destinations | experiences
   const [q, setQ] = useState(params.get("q") || "");
+  const [arrival, setArrival] = useState(params.get("arrival") || "");
+  const [departure, setDeparture] = useState(params.get("departure") || "");
   const [travelers, setTravelers] = useState(params.get("t") || "");
   const [page, setPage] = useState(Number(params.get("page") || 1));
+
   const [data, setData] = useState({ items: [], total: 0 });
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
@@ -38,10 +42,12 @@ export default function SearchPage() {
     const next = new URLSearchParams();
     if (q) next.set("q", q);
     if (mode) next.set("type", mode);
+    if (arrival) next.set("arrival", arrival);
+    if (departure) next.set("departure", departure);
     if (travelers) next.set("t", travelers);
     if (page > 1) next.set("page", String(page));
     setParams(next, { replace: true });
-  }, [q, mode, travelers, page, setParams]);
+  }, [q, mode, arrival, departure, travelers, page, setParams]);
 
   const totalPages = useMemo(
     () => Math.max(1, Math.ceil((data.total || 0) / limit)),
@@ -53,8 +59,8 @@ export default function SearchPage() {
       <header className="sp-nav">
         <Link to="/" className="logo">Host</Link>
         <div className="sp-auth">
-          <Link to="/login">Log In</Link>
-          <Link to="/register" className="primary">Sign Up</Link>
+          <Link to="/login" className="btn outline">Log In</Link>
+          <Link to="/register" className="btn primary">Sign Up</Link>
         </div>
       </header>
 
@@ -80,6 +86,18 @@ export default function SearchPage() {
             onChange={(e) => { setQ(e.target.value); setPage(1); }}
             placeholder={mode === "experiences" ? "Search experiences or places" : "Search destinations or city"}
             aria-label="Search"
+          />
+          <input
+            type="date"
+            value={arrival}
+            onChange={(e) => setArrival(e.target.value)}
+            aria-label="Arrival"
+          />
+          <input
+            type="date"
+            value={departure}
+            onChange={(e) => setDeparture(e.target.value)}
+            aria-label="Departure"
           />
           <input
             type="number"
