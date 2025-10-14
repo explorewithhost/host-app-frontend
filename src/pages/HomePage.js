@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./HomePage.css";
+import Footer from "../components/Footer";
 
 export default function HomePage() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -125,6 +126,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+        <Footer />
     </div>
   );
 }
