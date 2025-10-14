@@ -1,11 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Footer from "../components/Footer";      // ✅ add footer import
+import Footer from "../components/Footer";
 import "./AboutPage.css";
 
-/** Local team photo */
-import RioPhoto from "../assets/rio.jpg";
-import AndrewPhoto from "../assets/andrew.jpg";
+// ✅ point to the folder you actually used
+import RioPhoto from "../assets/team/rio.jpg";
+import AndrewPhoto from "../assets/team/andrew.jpg";
 
 export default function AboutPage() {
   return (
@@ -92,25 +92,19 @@ export default function AboutPage() {
         </ul>
       </section>
 
-      {/* TEAM SECTION */}
+      {/* TEAM SECTION (real photos) */}
       <section className="ab-section">
         <h2 className="ab-title">Meet the Founders</h2>
         <div className="ab-team">
           <div className="ab-member">
-            <img
-              src={RioPhoto}
-              alt="Rio Rodrigues"
-            />
+            <img src={RioPhoto} alt="Portrait of Rio Rodrigues, Co-founder" />
             <h4>Rio Rodrigues</h4>
-            <p>Co-Founder</p>
+            <p>Co-founder</p>
           </div>
           <div className="ab-member">
-            <img
-              src={AndrewPhoto}
-              alt="Andrew Green"
-            />
+            <img src={AndrewPhoto} alt="Portrait of Andrew Green, Co-founder" />
             <h4>Andrew Green</h4>
-            <p>Co-Founder</p>
+            <p>Co-founder</p>
           </div>
         </div>
       </section>
@@ -123,7 +117,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* ✅ Global footer */}
       <Footer />
     </div>
   );
