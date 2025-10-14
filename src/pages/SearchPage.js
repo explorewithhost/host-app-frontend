@@ -6,14 +6,12 @@ import "./SearchPage.css";
 
 export default function SearchPage() {
   const [params, setParams] = useSearchParams();
-
-  const [mode, setMode] = useState(params.get("type") || "destinations"); // destinations | experiences
+  const [mode, setMode] = useState(params.get("type") || "destinations");
   const [q, setQ] = useState(params.get("q") || "");
   const [arrival, setArrival] = useState(params.get("arrival") || "");
   const [departure, setDeparture] = useState(params.get("departure") || "");
   const [travelers, setTravelers] = useState(params.get("t") || "");
   const [page, setPage] = useState(Number(params.get("page") || 1));
-
   const [data, setData] = useState({ items: [], total: 0 });
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
@@ -56,14 +54,7 @@ export default function SearchPage() {
 
   return (
     <div className="searchpage">
-      <header className="sp-nav">
-        <Link to="/" className="logo">Host</Link>
-        <div className="sp-auth">
-          <Link to="/login" className="btn outline">Log In</Link>
-          <Link to="/register" className="btn primary">Sign Up</Link>
-        </div>
-      </header>
-
+      {/* sticky filters under global navbar */}
       <section className="sp-filters">
         <div className="sp-toggle">
           <button
@@ -87,42 +78,18 @@ export default function SearchPage() {
             placeholder={mode === "experiences" ? "Search experiences or places" : "Search destinations or city"}
             aria-label="Search"
           />
-          <input
-            type="date"
-            value={arrival}
-            onChange={(e) => setArrival(e.target.value)}
-            aria-label="Arrival"
-          />
-          <input
-            type="date"
-            value={departure}
-            onChange={(e) => setDeparture(e.target.value)}
-            aria-label="Departure"
-          />
-          <input
-            type="number"
-            min="1"
-            value={travelers}
-            onChange={(e) => setTravelers(e.target.value)}
-            placeholder="Travelers"
-            aria-label="Number of travelers"
-          />
+          <input type="date" value={arrival} onChange={(e) => setArrival(e.target.value)} aria-label="Arrival" />
+          <input type="date" value={departure} onChange={(e) => setDeparture(e.target.value)} aria-label="Departure" />
+          <input type="number" min="1" value={travelers} onChange={(e) => setTravelers(e.target.value)} placeholder="Travelers" aria-label="Number of travelers" />
           <button className="apply" onClick={() => setPage(1)}>Search</button>
         </div>
       </section>
 
+      {/* results */}
       <main className="sp-grid">
-        {loading && (
-          <div className="sp-empty">
-            <div className="spinner" /> <p>Loading…</p>
-          </div>
-        )}
-        {!loading && err && (
-          <div className="sp-empty"><p className="error">{err}</p></div>
-        )}
-        {!loading && !err && data.items.length === 0 && (
-          <div className="sp-empty"><p>No results. Try a different place or switch tabs.</p></div>
-        )}
+        {loading && <div className="sp-empty"><div className="spinner" /> <p>Loading…</p></div>}
+        {!loading && err && <div className="sp-empty"><p className="error">{err}</p></div>}
+        {!loading && !err && data.items.length === 0 && <div className="sp-empty"><p>No results. Try a different place or switch tabs.</p></div>}
         {!loading && !err && data.items.map((h) => (
           <article key={h._id} className="sp-card">
             <div className="media">
@@ -138,22 +105,17 @@ export default function SearchPage() {
               <h3>{h.name}</h3>
               <p className="muted">{[h.city, h.country].filter(Boolean).join(", ")}</p>
               <div className="meta">
-                <span>
-                  {(() => {
+                <span>{
+                  (() => {
                     const prices = [
                       ...(h.offerings?.lodging || []),
                       ...(h.offerings?.experiences || []),
                       ...(h.offerings?.transport || []),
-                    ]
-                      .map((x) => x.price)
-                      .filter((x) => x != null);
-                    if (prices.length) {
-                      const p = Math.min(...prices);
-                      return `From $${p}/day`;
-                    }
+                    ].map(x => x.price).filter(x => x != null);
+                    if (prices.length) return `From $${Math.min(...prices)}/day`;
                     return "See details";
-                  })()}
-                </span>
+                  })()
+                }</span>
               </div>
               <div className="actions">
                 <Link to={`/hosts/${h._id}`} className="btn">View Journey</Link>
@@ -165,9 +127,9 @@ export default function SearchPage() {
 
       {!loading && !err && data.total > limit && (
         <div className="sp-pager">
-          <button disabled={page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>Prev</button>
+          <button disabled={page <= 1} onClick={() => setPage(p => Math.max(1, p - 1))}>Prev</button>
           <span>Page {page} / {totalPages}</span>
-          <button disabled={page >= totalPages} onClick={() => setPage((p) => Math.min(totalPages, p + 1))}>Next</button>
+          <button disabled={page >= totalPages} onClick={() => setPage(p => Math.min(totalPages, p + 1))}>Next</button>
         </div>
       )}
     </div>
