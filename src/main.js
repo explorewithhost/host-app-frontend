@@ -10,6 +10,7 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import HostProfileBuilder from "./pages/HostProfileBuilder";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AboutPage from "./pages/AboutPage";
 
 export default function Main() {
   return (
@@ -21,6 +22,7 @@ export default function Main() {
         <Route path="/hosts/:id" element={<HostProfilePage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/about" element={<AboutPage />} />
 
         {/* Protected */}
         <Route
