@@ -1,50 +1,134 @@
+/* Navbar transparent overlay style */
 .nav {
-  position: relative;
-  z-index: 50;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.nav.scrolled {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 22px;
+  transition: color 0.3s ease;
+}
+
+/* Logo color adjusts dynamically */
+.nav.scrolled .nav-logo {
+  color: #0b1220;
+}
+.nav-logo {
+  font-size: 28px;
+  font-weight: 900;
+  color: #fff;
+  text-decoration: none;
+}
+
+/* Links visible on both dark/light */
+.nav-link {
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+  opacity: 0.95;
+  transition: color 0.3s ease;
+}
+.nav.scrolled .nav-link {
+  color: #111;
+}
+
+/* CTA buttons */
+.nav-cta .btn {
+  border-radius: 26px;
+  padding: 10px 16px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.nav-cta .btn.ghost {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.3);
+}
+.nav.scrolled .btn.ghost {
+  background: transparent;
+  color: #111;
+  border: 1px solid #ddd;
+}
+.nav-cta .btn.primary {
+  background: #0b63ff;
   color: #fff;
 }
-.nav-inner {
-  position: relative;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 18px 20px;
-  backdrop-filter: blur(8px);
+
+/* Hamburger */
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
-.nav-logo { font-size: 28px; font-weight: 900; color: #fff; text-decoration: none; }
-
-.nav-desktop { display: flex; gap: 24px; }
-.nav-link { color: #fff; font-weight: 700; text-decoration: none; opacity: .95; }
-.nav-link.active { text-decoration: underline; text-underline-offset: 6px; }
-
-.nav-cta { display: flex; gap: 10px; }
-.btn { border-radius: 26px; padding: 10px 16px; font-weight: 800; text-decoration: none; }
-.btn.ghost { background: rgba(255,255,255,.15); color: #fff; border: 1px solid rgba(255,255,255,.3); }
-.btn.primary { background: #0b63ff; color: #fff; }
-
-/* Hamburger (hidden on desktop) */
-.hamburger { display: none; background: none; border: 0; cursor: pointer; }
-.hamburger span { display: block; width: 26px; height: 2px; background: #fff; margin: 6px 0; }
-
-/* Drawer + overlay */
-.nav-overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,.45); backdrop-filter: blur(2px);
+.hamburger span {
+  display: block;
+  width: 26px;
+  height: 2px;
+  background: #fff;
+  margin: 6px 0;
+  transition: background 0.3s ease;
 }
+.nav.scrolled .hamburger span {
+  background: #111;
+}
+
+/* Drawer (mobile) */
 .nav-drawer {
-  position: fixed; top: 0; left: 0; bottom: 0; width: 78%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 78%;
+  background: #0b1220;
+  color: #fff;
   transform: translateX(-102%);
-  background: #0b1220; color: #fff; padding: 20px 18px;
-  transition: transform .28s ease;
-  box-shadow: 0 10px 40px rgba(0,0,0,.35);
+  transition: transform 0.3s ease;
+  padding: 22px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
 }
-.nav-drawer.open { transform: translateX(0); }
+.nav-drawer.open {
+  transform: translateX(0);
+}
 .drawer-close {
-  position: absolute; top: 12px; right: 12px; border: 0; background: none; color: #fff; font-size: 22px; cursor: pointer;
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  border: none;
+  background: none;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
 }
-.drawer-link { display: block; padding: 14px 6px; color: #fff; text-decoration: none; font-weight: 700; }
-.drawer-link:active, .drawer-link:focus { outline: none; text-decoration: underline; }
-.drawer-sep { height: 1px; background: rgba(255,255,255,.12); margin: 8px 0 10px; }
+
+/* Overlay */
+.nav-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(2px);
+}
 
 /* Responsive */
 @media (max-width: 900px) {
-  .nav-desktop, .nav-cta { display: none; }
-  .hamburger { display: block; }
+  .nav-desktop,
+  .nav-cta {
+    display: none;
+  }
+  .hamburger {
+    display: block;
+  }
 }

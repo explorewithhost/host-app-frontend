@@ -4,21 +4,24 @@ import "./Navbar.css";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
-  }, [open]);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <header className="nav">
+    <header className={`nav ${scrolled ? "scrolled" : ""}`}>
       <div className="nav-inner">
         <Link to="/" className="nav-logo">Host</Link>
 
         <nav className="nav-desktop">
           <NavLink to="/search" className="nav-link">Explore</NavLink>
           <NavLink to="/host/profile-builder" className="nav-link">Become a Host</NavLink>
-          {/* About lives in footer now */}
         </nav>
 
         <div className="nav-cta">
@@ -28,21 +31,19 @@ export default function Navbar() {
 
         <button
           className="hamburger"
+          onClick={() => setOpen(true)}
           aria-label="Open menu"
           aria-expanded={open}
-          aria-controls="mobile-menu"
-          onClick={() => setOpen(true)}
         >
-          <span /><span /><span />
+          <span></span>
+          <span></span>
+          <span></span>
         </button>
       </div>
 
-      {/* Overlay */}
       {open && <div className="nav-overlay" onClick={() => setOpen(false)} />}
-
-      {/* Drawer */}
-      <aside id="mobile-menu" className={`nav-drawer ${open ? "open" : ""}`} role="dialog" aria-modal="true">
-        <button className="drawer-close" aria-label="Close menu" onClick={() => setOpen(false)}>✕</button>
+      <aside className={`nav-drawer ${open ? "open" : ""}`}>
+        <button className="drawer-close" onClick={() => setOpen(false)}>✕</button>
         <Link to="/search" className="drawer-link" onClick={() => setOpen(false)}>Explore</Link>
         <Link to="/host/profile-builder" className="drawer-link" onClick={() => setOpen(false)}>Become a Host</Link>
         <div className="drawer-sep" />
