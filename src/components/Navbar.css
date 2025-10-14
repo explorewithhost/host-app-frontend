@@ -1,45 +1,50 @@
-.navbar {
-  position: sticky; top: 0; z-index: 50;
-  display:flex; align-items:center; justify-content:space-between;
-  padding: .9rem 1.2rem;
-  background: #ffffffcc; backdrop-filter: blur(8px);
-  border-bottom: 1px solid #e5e7eb;
+.nav {
+  position: relative;
+  z-index: 50;
+  color: #fff;
 }
-.logo { color:#0b6bff; text-decoration:none; font-weight:800; font-size:1.2rem; }
-
-.nav-links { display:flex; gap:1rem; }
-.nav-links a { text-decoration:none; color:#111827; font-weight:600; }
-.nav-links a.active { color:#0b6bff; }
-
-.auth-buttons a {
-  text-decoration:none; margin-left:.6rem; padding:.45rem .9rem; border-radius:999px; font-weight:700;
+.nav-inner {
+  position: relative;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 20px;
+  backdrop-filter: blur(8px);
 }
-.auth-buttons .login { background:#fff; border:1px solid #e5e7eb; color:#111827; }
-.auth-buttons .signup { background:#0b6bff; border:1px solid #0b6bff; color:#fff; }
+.nav-logo { font-size: 28px; font-weight: 900; color: #fff; text-decoration: none; }
 
-.hamburger { display:none; width:40px; height:40px; border:none; background:transparent; position:relative; }
-.hamburger span { position:absolute; left:8px; right:8px; height:2px; background:#111827; transition:.25s; }
-.hamburger span:nth-child(1){ top:12px; }
-.hamburger span:nth-child(2){ top:19px; }
-.hamburger span:nth-child(3){ top:26px; }
-.hamburger.active span:nth-child(1){ transform: translateY(7px) rotate(45deg); }
-.hamburger.active span:nth-child(2){ opacity:0; }
-.hamburger.active span:nth-child(3){ transform: translateY(-7px) rotate(-45deg); }
+.nav-desktop { display: flex; gap: 24px; }
+.nav-link { color: #fff; font-weight: 700; text-decoration: none; opacity: .95; }
+.nav-link.active { text-decoration: underline; text-underline-offset: 6px; }
 
-.drawer { position:fixed; inset:0; background:#0003; opacity:0; pointer-events:none; transition:.2s; }
-.drawer.open { opacity:1; pointer-events:auto; }
-.drawer-panel {
-  position:absolute; right:0; top:0; bottom:0; width:min(82vw, 360px);
-  background:#fff; padding:1rem; border-left:1px solid #e5e7eb;
-  display:flex; flex-direction:column; gap:.9rem;
+.nav-cta { display: flex; gap: 10px; }
+.btn { border-radius: 26px; padding: 10px 16px; font-weight: 800; text-decoration: none; }
+.btn.ghost { background: rgba(255,255,255,.15); color: #fff; border: 1px solid rgba(255,255,255,.3); }
+.btn.primary { background: #0b63ff; color: #fff; }
+
+/* Hamburger (hidden on desktop) */
+.hamburger { display: none; background: none; border: 0; cursor: pointer; }
+.hamburger span { display: block; width: 26px; height: 2px; background: #fff; margin: 6px 0; }
+
+/* Drawer + overlay */
+.nav-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.45); backdrop-filter: blur(2px);
 }
-.drawer-panel a { color:#111827; text-decoration:none; padding:.6rem .5rem; border-radius:10px; }
-.drawer-panel a:hover { background:#f3f4f6; }
-.drawer-auth { margin-top:auto; display:flex; gap:.6rem; }
-.drawer-auth .login { background:#fff; color:#111827; border:1px solid #e5e7eb; }
-.drawer-auth .signup { background:#0b6bff; color:#fff; }
+.nav-drawer {
+  position: fixed; top: 0; left: 0; bottom: 0; width: 78%;
+  transform: translateX(-102%);
+  background: #0b1220; color: #fff; padding: 20px 18px;
+  transition: transform .28s ease;
+  box-shadow: 0 10px 40px rgba(0,0,0,.35);
+}
+.nav-drawer.open { transform: translateX(0); }
+.drawer-close {
+  position: absolute; top: 12px; right: 12px; border: 0; background: none; color: #fff; font-size: 22px; cursor: pointer;
+}
+.drawer-link { display: block; padding: 14px 6px; color: #fff; text-decoration: none; font-weight: 700; }
+.drawer-link:active, .drawer-link:focus { outline: none; text-decoration: underline; }
+.drawer-sep { height: 1px; background: rgba(255,255,255,.12); margin: 8px 0 10px; }
 
-@media (max-width: 980px){
-  .nav-links, .auth-buttons { display:none; }
-  .hamburger { display:block; }
+/* Responsive */
+@media (max-width: 900px) {
+  .nav-desktop, .nav-cta { display: none; }
+  .hamburger { display: block; }
 }

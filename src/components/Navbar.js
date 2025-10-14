@@ -1,46 +1,54 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import "./Navbar.css";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
 
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [open]);
+
   return (
-    <header className="navbar">
-      <Link to="/" className="logo">Host</Link>
+    <header className="nav">
+      <div className="nav-inner">
+        <Link to="/" className="nav-logo">Host</Link>
 
-      {/* desktop */}
-      <nav className="nav-links">
-        <NavLink to="/search" className={({isActive}) => isActive ? "active" : ""}>Explore</NavLink>
-        <NavLink to="/host/profile-builder" className={({isActive}) => isActive ? "active" : ""}>Become a Host</NavLink>
-        {/* About lives in footer now – intentionally removed from navbar */}
-      </nav>
+        <nav className="nav-desktop">
+          <NavLink to="/search" className="nav-link">Explore</NavLink>
+          <NavLink to="/host/profile-builder" className="nav-link">Become a Host</NavLink>
+          {/* About lives in footer now */}
+        </nav>
 
-      <div className="auth-buttons">
-        <Link className="login" to="/login">Log In</Link>
-        <Link className="signup" to="/register">Sign Up</Link>
-      </div>
-
-      {/* hamburger */}
-      <button
-        className={`hamburger ${open ? "active" : ""}`}
-        aria-label="Menu"
-        onClick={() => setOpen(v => !v)}
-      >
-        <span/><span/><span/>
-      </button>
-
-      {/* drawer */}
-      <div className={`drawer ${open ? "open" : ""}`} onClick={() => setOpen(false)}>
-        <div className="drawer-panel" onClick={e => e.stopPropagation()}>
-          <Link to="/search" onClick={() => setOpen(false)}>Explore</Link>
-          <Link to="/host/profile-builder" onClick={() => setOpen(false)}>Become a Host</Link>
-          <div className="drawer-auth">
-            <Link className="login" to="/login" onClick={() => setOpen(false)}>Log In</Link>
-            <Link className="signup" to="/register" onClick={() => setOpen(false)}>Sign Up</Link>
-          </div>
+        <div className="nav-cta">
+          <Link to="/login" className="btn ghost">Log In</Link>
+          <Link to="/register" className="btn primary">Sign Up</Link>
         </div>
+
+        <button
+          className="hamburger"
+          aria-label="Open menu"
+          aria-expanded={open}
+          aria-controls="mobile-menu"
+          onClick={() => setOpen(true)}
+        >
+          <span /><span /><span />
+        </button>
       </div>
+
+      {/* Overlay */}
+      {open && <div className="nav-overlay" onClick={() => setOpen(false)} />}
+
+      {/* Drawer */}
+      <aside id="mobile-menu" className={`nav-drawer ${open ? "open" : ""}`} role="dialog" aria-modal="true">
+        <button className="drawer-close" aria-label="Close menu" onClick={() => setOpen(false)}>✕</button>
+        <Link to="/search" className="drawer-link" onClick={() => setOpen(false)}>Explore</Link>
+        <Link to="/host/profile-builder" className="drawer-link" onClick={() => setOpen(false)}>Become a Host</Link>
+        <div className="drawer-sep" />
+        <Link to="/login" className="drawer-link" onClick={() => setOpen(false)}>Log In</Link>
+        <Link to="/register" className="drawer-link" onClick={() => setOpen(false)}>Sign Up</Link>
+      </aside>
     </header>
   );
 }

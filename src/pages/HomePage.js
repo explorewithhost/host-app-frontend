@@ -12,10 +12,10 @@ export default function HomePage() {
   function onSearch(e) {
     e.preventDefault();
     const qs = new URLSearchParams();
-    if (where) qs.set("q", where);
+    if (where) qs.set("q", where.trim());
     if (arrival) qs.set("arrival", arrival);
     if (departure) qs.set("departure", departure);
-    if (travelers) qs.set("t", travelers);
+    if (travelers) qs.set("t", travelers.trim());
     navigate(`/search?${qs.toString()}`);
   }
 
@@ -26,35 +26,55 @@ export default function HomePage() {
           <h1>Travel that feels like making a friend</h1>
           <p>Discover places through locals who open their world to you.</p>
 
-          <form className="search-bar" onSubmit={onSearch}>
-            <input
-              type="text"
-              placeholder="Where to?"
-              aria-label="Destination"
-              value={where}
-              onChange={(e) => setWhere(e.target.value)}
-            />
-            <input
-              type="date"
-              aria-label="Arrival"
-              value={arrival}
-              onChange={(e) => setArrival(e.target.value)}
-            />
-            <input
-              type="date"
-              aria-label="Departure"
-              value={departure}
-              onChange={(e) => setDeparture(e.target.value)}
-            />
-            <input
-              type="number"
-              min="1"
-              placeholder="Travelers"
-              aria-label="Number of travelers"
-              value={travelers}
-              onChange={(e) => setTravelers(e.target.value)}
-            />
-            <button className="search-btn" type="submit">Search</button>
+          {/* SEARCH BAR */}
+          <form className="hp-search" onSubmit={onSearch}>
+            <div className="hp-field">
+              <label htmlFor="hp-where">Where to?</label>
+              <input
+                id="hp-where"
+                type="text"
+                placeholder="Kyoto, Japan"
+                value={where}
+                onChange={(e) => setWhere(e.target.value)}
+              />
+            </div>
+
+            <div className="hp-field">
+              <label htmlFor="hp-arrive">Arrival</label>
+              <input
+                id="hp-arrive"
+                type="date"
+                inputMode="none"
+                value={arrival}
+                onChange={(e) => setArrival(e.target.value)}
+              />
+            </div>
+
+            <div className="hp-field">
+              <label htmlFor="hp-depart">Departure</label>
+              <input
+                id="hp-depart"
+                type="date"
+                inputMode="none"
+                value={departure}
+                onChange={(e) => setDeparture(e.target.value)}
+              />
+            </div>
+
+            <div className="hp-field">
+              <label htmlFor="hp-travelers">Travelers</label>
+              <input
+                id="hp-travelers"
+                type="text"
+                placeholder="2 adults"
+                value={travelers}
+                onChange={(e) => setTravelers(e.target.value)}
+              />
+            </div>
+
+            <button className="hp-searchBtn" type="submit">
+              Search
+            </button>
           </form>
         </div>
       </section>

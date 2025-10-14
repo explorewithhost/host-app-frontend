@@ -4,97 +4,96 @@
   color: #1f2937;
 }
 
-/* Navbar */
-.navbar {
-  position: absolute; inset: 0 0 auto 0; z-index: 20;
-  padding: 1.1rem 1.2rem;
-  display: flex; align-items: center; justify-content: space-between;
-  background: transparent;
-}
-.logo { color: #fff; font-weight: 800; letter-spacing: .3px; }
-
-/* desktop links */
-.nav-links { display:flex; gap:1.1rem; }
-.nav-links a {
-  color:#fff; text-decoration:none; font-weight:500;
-}
-
-.auth-buttons a {
-  text-decoration: none; margin-left:.6rem; padding:.5rem 1rem;
-  border-radius: 999px; font-weight: 600;
-}
-.auth-buttons .login { color:#fff; background: rgba(255,255,255,.18); }
-.auth-buttons .signup { color:#fff; background:#0b6bff; }
-
-/* hamburger (hidden desktop) */
-.hamburger { display:none; width:40px; height:40px; border:none; background:transparent; position:relative; }
-.hamburger span { position:absolute; left:8px; right:8px; height:2px; background:#fff; transition:.25s; }
-.hamburger span:nth-child(1){ top:12px; }
-.hamburger span:nth-child(2){ top:19px; }
-.hamburger span:nth-child(3){ top:26px; }
-.hamburger.active span:nth-child(1){ transform: translateY(7px) rotate(45deg); }
-.hamburger.active span:nth-child(2){ opacity:0; }
-.hamburger.active span:nth-child(3){ transform: translateY(-7px) rotate(-45deg); }
-
-/* drawer */
-.drawer { position:fixed; inset:0; background:#0003; opacity:0; pointer-events:none; transition:.2s; }
-.drawer.open { opacity:1; pointer-events:auto; }
-.drawer-panel {
-  position:absolute; right:0; top:0; bottom:0; width:min(82vw, 360px);
-  background:#fff; padding:1rem; border-left:1px solid #e5e7eb;
-  display:flex; flex-direction:column; gap:.9rem;
-}
-.drawer-panel a { color:#111827; text-decoration:none; padding:.6rem .5rem; border-radius:10px; }
-.drawer-panel a:hover { background:#f3f4f6; }
-.drawer-auth { margin-top:auto; display:flex; gap:.6rem; }
-.drawer-auth .login { background:#fff; color:#111827; border:1px solid #e5e7eb; }
-.drawer-auth .signup { background:#0b6bff; color:#fff; }
+/* (Navbar is handled by Navbar.css; keep hero full-bleed underneath it) */
 
 /* Hero */
 .hero {
-  height: 100vh;
+  min-height: 92vh;
   background: url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2000&auto=format&fit=crop")
     center/cover no-repeat;
-  position: relative; display: flex; align-items: center; justify-content: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.hero::after { content:""; position:absolute; inset:0; background: rgba(0,0,0,.45); }
-.hero .overlay { position:relative; z-index:1; color:#fff; text-align:center; padding:0 1rem; }
-.hero h1 { font-size: clamp(2rem, 5vw, 3.5rem); line-height:1.1; margin:0 0 .8rem; font-weight:800; }
-.hero p { opacity:.95; font-size:1.1rem; margin-bottom:1.4rem; }
+.hero::after { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,.45); }
+.hero .overlay { position: relative; z-index: 1; color: #fff; text-align: center; padding: 0 1rem; }
+.hero h1 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; margin: 0 0 .8rem; font-weight: 800; }
+.hero p { opacity: .95; font-size: 1.1rem; margin-bottom: 1.4rem; }
 
-/* Search bar (5 cols on desktop) */
-.search-bar {
-  display:grid; grid-template-columns: 1.2fr .9fr .9fr .7fr auto;
-  gap:.5rem; background:#fff; padding:.5rem; border-radius:999px; align-items:center;
-  max-width: 1050px; margin:0 auto; box-shadow:0 10px 30px #0000001a;
+/* NEW — Search layout (labels keep iOS date fields readable) */
+.hp-search {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr 1fr auto;
+  gap: 0.75rem;
+  align-items: end;
+  background: rgba(255,255,255,.9);
+  border-radius: 18px;
+  padding: 0.9rem;
+  backdrop-filter: blur(6px);
+  max-width: 1050px;
+  margin: 0 auto;
+  box-shadow: 0 10px 30px #0000001a;
 }
-.search-bar input {
-  border:none; background:#f3f4f6; padding:.8rem 1rem; border-radius:999px; outline:none;
+.hp-field { display: flex; flex-direction: column; gap: .35rem; text-align: left; }
+.hp-field label {
+  font-size: .84rem;
+  font-weight: 700;
+  color: #0f172a;
+  opacity: .9;
 }
-.search-btn {
-  background:#0b6bff; color:#fff; border:none; padding:.8rem 1.2rem;
-  border-radius:999px; font-weight:700; white-space:nowrap; cursor:pointer;
+.hp-field input {
+  height: 46px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  padding: 0 .9rem;
+  font-size: .95rem;
+  background: #f8fafc;
+  outline: none;
+}
+.hp-searchBtn {
+  height: 46px;
+  padding: 0 1.25rem;
+  border-radius: 12px;
+  background: #0b63ff;
+  color: #fff;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* iOS WebKit: keep the editable part visible for date inputs */
+input[type="date"]::-webkit-datetime-edit {
+  color: #111;
 }
 
 /* How it works */
-.how-it-works { padding:4rem 1rem; text-align:center; background:#fff; }
-.how-it-works h2 { font-size:2rem; margin-bottom:2rem; }
+.how-it-works { padding: 4rem 1rem; text-align: center; background: #fff; }
+.how-it-works h2 { font-size: 2rem; margin-bottom: 2rem; }
 .steps {
-  display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap:2rem; max-width:1000px; margin:0 auto;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2rem; max-width: 1000px; margin: 0 auto;
 }
-.steps .icon { width:56px; height:56px; display:grid; place-items:center; margin:0 auto 1rem; border-radius:14px; background:#eef2ff; font-size:26px; }
-.steps h3 { margin:.3rem 0 .4rem; font-size:1.15rem; }
-.steps p { color:#4b5563; }
+.steps .icon {
+  width: 56px; height: 56px; display: grid; place-items: center; margin: 0 auto 1rem;
+  border-radius: 14px; background: #eef2ff; font-size: 26px;
+}
+.steps h3 { margin: .3rem 0 .4rem; font-size: 1.15rem; }
+.steps p { color: #4b5563; }
 
 /* Responsive */
 @media (max-width: 980px){
-  .nav-links, .auth-buttons { display:none; }
-  .hamburger { display:block; }
+  .hero { min-height: 86vh; }
 }
 @media (max-width: 780px){
-  .search-bar {
-    grid-template-columns: 1fr; gap:.6rem; border-radius:16px; width:min(92vw, 700px);
+  .hp-search {
+    grid-template-columns: 1fr;
+    gap: .65rem;
+    padding: .8rem;
+    border-radius: 14px;
+    background: rgba(255,255,255,.95);
+    width: min(92vw, 700px);
   }
-  .search-bar input, .search-btn { width:100%; border-radius:12px; }
+  .hp-searchBtn { width: 100%; }
 }
