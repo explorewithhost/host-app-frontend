@@ -3,6 +3,10 @@ import { Link } from "react-router-dom";
 import Footer from "../components/Footer";      // ✅ add footer import
 import "./AboutPage.css";
 
+/** Local team photo */
+import RioPhoto from "../assets/rio.jpg";
+import AndrewPhoto from "../assets/andrew.jpg";
+
 export default function AboutPage() {
   return (
     <div className="about">
@@ -94,19 +98,19 @@ export default function AboutPage() {
         <div className="ab-team">
           <div className="ab-member">
             <img
-              src="https://images.unsplash.com/photo-1607746882042-944635dfe10e?q=80&w=600"
+              src={RioPhoto}
               alt="Rio Rodrigues"
             />
             <h4>Rio Rodrigues</h4>
-            <p>Co-Founder & CEO</p>
+            <p>Co-Founder</p>
           </div>
           <div className="ab-member">
             <img
-              src="https://images.unsplash.com/photo-1595152772835-219674b2a8a6?q=80&w=600"
+              src={AndrewPhoto}
               alt="Andrew Green"
             />
             <h4>Andrew Green</h4>
-            <p>Co-Founder & CTO</p>
+            <p>Co-Founder</p>
           </div>
         </div>
       </section>
