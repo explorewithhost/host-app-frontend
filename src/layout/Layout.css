@@ -12,6 +12,18 @@
 }
 .brand { color: #fff; font-weight: 800; font-size: 28px; text-decoration: none; }
 
+.brand-logo {
+  height: 42px;
+  width: auto;
+  display: block;
+}
+
+@media (min-width: 960px) {
+  .brand-logo {
+    height: 48px;
+  }
+}
+
 /* Desktop nav */
 .nav-desktop { display: none; gap: 22px; align-items: center; }
 .nav-link { color: #e5e7eb; text-decoration: none; font-weight: 600; }

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, NavLink, Outlet } from "react-router-dom";
 import "./Layout.css";
 import Footer from "../components/Footer"; // ⟵ NEW
+import HostLogo from "../assets/HostLogo.png";
 
 export default function Layout() {
   const [open, setOpen] = useState(false);
@@ -12,7 +13,10 @@ export default function Layout() {
       {/* Header */}
       <header className="site-header" aria-label="Primary">
         <div className="nav-inner">
-          <Link to="/" className="brand" onClick={closeMenu}>Host</Link>
+          <Link to="/" className="brand" onClick={closeMenu}>
+            <img src={HostLogo} alt="Host Logo" className="brand-logo" />
+          </Link>
+
 
           {/* Desktop nav */}
           <nav className="nav-desktop">
