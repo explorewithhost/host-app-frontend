@@ -82,6 +82,15 @@ export default function Footer() {
                 <option value="en-GB">English (UK)</option>
                 <option value="es-ES">Español</option>
                 <option value="fr-FR">Français</option>
+                <option value="de-DE">Deutsch</option>
+                <option value="it-IT">Italiano</option>
+                <option value="pt-BR">Português (Brasil)</option>
+                <option value="zh-CN">中文 (简体)</option>
+                <option value="ja-JP">日本語</option>
+                <option value="ko-KR">한국어</option>
+                <option value="ar-SA">العربية</option>
+                <option value="hi-IN">हिन्दी</option>
+                <option value="ru-RU">Русский</option>
               </select>
 
               <label className="sr-only" htmlFor="region">Region</label>
@@ -90,6 +99,8 @@ export default function Footer() {
                 <option value="GB">United Kingdom</option>
                 <option value="CA">Canada</option>
                 <option value="AU">Australia</option>
+                <option value="TH">Thailand</option>
+                <option value="BR">Brasil</option>
               </select>
             </div>
 

@@ -8,12 +8,12 @@
 }
 .nav-inner {
   display: flex; align-items: center; justify-content: space-between;
-  max-width: 1200px; margin: 0 auto; padding: 14px 16px;
+  max-width: 1200px; margin: 0 auto; padding: 18px 20px;
 }
 .brand { color: #fff; font-weight: 800; font-size: 28px; text-decoration: none; }
 
 .brand-logo {
-  height: 42px;
+  height: 70px;
   width: auto;
   display: block;
 }
