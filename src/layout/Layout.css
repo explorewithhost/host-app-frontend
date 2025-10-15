@@ -6,22 +6,40 @@
   background: linear-gradient(to bottom, rgba(15,23,42,.65), rgba(15,23,42,.35), transparent);
   backdrop-filter: saturate(150%) blur(6px);
 }
+.site-header.is-opaque {           /* darker when mobile menu is open */
+  background: #0b1220;
+}
+
 .nav-inner {
   display: flex; align-items: center; justify-content: space-between;
   max-width: 1200px; margin: 0 auto; padding: 18px 20px;
 }
-.brand { color: #fff; font-weight: 800; font-size: 28px; text-decoration: none; }
 
+/* Brand (logo + wordmark) — consolidated (removed duplicates) */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: #fff;
+  font-weight: 800;
+}
 .brand-logo {
-  height: 70px;
+  height: 70px;     /* adjust as you like */
   width: auto;
   display: block;
+  filter: drop-shadow(0 0 2px rgba(0,0,0,.35)); /* keeps it visible over imagery */
+}
+.brand-text {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.5px;
 }
 
 @media (min-width: 960px) {
-  .brand-logo {
-    height: 48px;
-  }
+  .brand-logo { height: 80px; }
+  .brand-text { font-size: 2rem; }
 }
 
 /* Desktop nav */
@@ -32,10 +50,15 @@
 .btn-ghost { color: #e5e7eb; border: 1px solid #ffffff33; background: transparent; }
 .btn-primary { color: #fff; background: #0b63ff; border: none; }
 
-/* Hamburger — always visible on light hero areas */
-.hamburger { position: relative; width: 28px; height: 22px; display: inline-flex; flex-direction: column;
-  justify-content: space-between; background: none; border: 0; cursor: pointer; }
-.hamburger span { display: block; height: 2px; width: 100%; background: #fff; border-radius: 2px; }
+/* Hamburger (high-contrast) */
+.hamburger {
+  position: relative; width: 28px; height: 22px; display: inline-flex; flex-direction: column;
+  justify-content: space-between; background: none; border: 0; cursor: pointer;
+}
+.hamburger span {
+  display: block; height: 2px; width: 100%; background: #fff; border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(0,0,0,.25); /* helps on light backgrounds */
+}
 .hamburger.is-open span:nth-child(2){ opacity: 0; }
 .hamburger.is-open span:first-child{ transform: translateY(10px) rotate(45deg); }
 .hamburger.is-open span:last-child{ transform: translateY(-10px) rotate(-45deg); }
@@ -51,7 +74,7 @@
 .panel-close { position: absolute; top: 14px; right: 18px; font-size: 28px; color: #fff;
   background: none; border: 0; cursor: pointer; }
 .panel-links { display: flex; flex-direction: column; gap: 18px; margin-top: 24px; }
-.panel-links a { color: #e5e7eb; text-decoration: none; font-size: 20px; font-weight: 700; }
+.panel-links a, .panel-links a:visited { color: #e5e7eb; text-decoration: none; font-size: 20px; font-weight: 700; }
 .panel-links a:active, .panel-links a:focus { color: #fff; outline: none; }
 .panel-links hr { border: 0; height: 1px; background: #ffffff24; margin: 8px 0; }
 
