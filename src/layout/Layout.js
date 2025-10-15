@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Link, NavLink, Outlet } from "react-router-dom";
 import "./Layout.css";
+import Footer from "../components/Footer"; // ⟵ NEW
 
 export default function Layout() {
   const [open, setOpen] = useState(false);
-
   const closeMenu = () => setOpen(false);
 
   return (
@@ -49,7 +49,7 @@ export default function Layout() {
           </nav>
         </div>
 
-        {/* Scrim (click to close) */}
+        {/* Scrim */}
         <button
           className={`scrim ${open ? "show" : ""}`}
           aria-hidden={!open}
@@ -62,6 +62,9 @@ export default function Layout() {
       <main className="page-wrap">
         <Outlet />
       </main>
+
+      {/* Global footer ⟵ NEW */}
+      <Footer />
     </>
   );
 }

@@ -15,6 +15,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  padding-top: clamp(80px, 12vw, 140px);
 }
 .hero::after { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,.45); }
 .hero .overlay { position: relative; z-index: 1; color: #fff; text-align: center; padding: 0 1rem; }

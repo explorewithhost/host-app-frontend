@@ -27,6 +27,7 @@ export default function Main() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/host" element={<HostProfileBuilder />} />
 
           {/* Protected */}
           <Route
