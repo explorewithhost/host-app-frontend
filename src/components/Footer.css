@@ -45,7 +45,6 @@
   padding: 1rem 0 2rem;
 }
 .ft-left { display: flex; gap: .75rem; align-items: center; flex-wrap: wrap; }
-.brand { font-weight: 800; color: #fff; }
 .legal { color: #cbd5e1; }
 
 .ft-right { display:flex; gap:1rem; align-items:center; flex-wrap:wrap; }

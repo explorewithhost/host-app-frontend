@@ -13,18 +13,16 @@ export default function Layout() {
       {/* Header */}
       <header
         className={`site-header ${open ? "is-opaque" : ""}`} // darker when menu open
-        aria-label="Primary"
-      >
+        aria-label="Primary">
         <div className="nav-inner">
-          <Link to="/" className="brand" onClick={closeMenu}>
+          <Link to="/" className="brand" onClick={closeMenu} aria-label="Host home">
             <img
-              src={HostLogo}                 // <— use the import
-              alt="Host Logo"
+              src={HostLogo}
+              alt="Host"
               className="brand-logo"
               height={80}
               width="auto"
             />
-            <span className="brand-text">Host</span>
           </Link>
 
           {/* Desktop nav */}
